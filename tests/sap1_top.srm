@@ -1,0 +1,7 @@
+# Top level address map of srm
+require_relative "sap1_blockX.srm"
+
+RegBlock.new(name: 'sap1') do |blk|
+  blk << blockX.offset(0xa0000000)
+end
+

@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+#
+# Script to convert ruby code into json output.
+#
+require 'optparse'
+require_relative '../lib/srm'
+require 'json'
+require 'ostruct'
+require 'erb'
+
+eval(File.new('sap1_top.rb').read)
