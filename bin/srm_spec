@@ -2,10 +2,19 @@
 #
 # Script to convert ruby code into json output.
 #
-require 'optparse'
-require_relative '../lib/srm'
-require 'json'
-require 'ostruct'
-require 'erb'
+require_relative "../lib/srm"
+spec_file = "../tests/sap1_top.rb"
+$LOAD_PATH << "../tests"
+$LOAD_PATH << "../lib"
 
-eval(File.new('sap1_top.rb').read)
+top = "Sap1"
+
+eval(File.new(spec_file).read, binding, __FILE__, __LINE__)
+
+klass = Kernel.const_get(top)
+inst = klass.new(name: "srm_root")
+
+inst.nodes.each do |n|
+  puts JSON.pretty_generate(n)
+end
+

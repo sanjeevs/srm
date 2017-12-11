@@ -2,11 +2,11 @@ require_relative "field"
 
 module SRM
 # A register array is a register with num_entries.
-class RegisterArray
+class Table 
   attr_reader :type, :name, :fields, :reset_kinds, :width, :num_entries, :offsets
 
   def initialize(name:, fields: [], reset_kinds: [], num_entries: 1)
-    @type = "RegisterArray"
+    @type = "Table"
     @name = name
     @fields = fields
     @reset_kinds = reset_kinds
@@ -20,7 +20,7 @@ class RegisterArray
   end
 
   def dup(new_name)
-    RegisterArray.new(name: new_name, fields: self.fields, num_entries: self.num_entries)
+    Table.new(name: new_name, fields: self.fields, num_entries: self.num_entries)
   end
 
   def hash
