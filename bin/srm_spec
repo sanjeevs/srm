@@ -3,15 +3,14 @@
 # Script to convert ruby code into json output.
 #
 require_relative "../lib/srm"
-spec_file = "../tests/sap1_top.rb"
-$LOAD_PATH << "../tests"
-$LOAD_PATH << "../lib"
+require_relative "srm_spec_options"
 
-top = "Sap1"
+opt = SrmSpecOptions.new(ARGV)
 
-eval(File.new(spec_file).read, binding, __FILE__, __LINE__)
 
-klass = Kernel.const_get(top)
+eval(File.new(opt.spec).read, binding, __FILE__, __LINE__)
+
+klass = Kernel.const_get(opt.top)
 inst = klass.new(name: "srm_root")
 
 inst.nodes.each do |n|
