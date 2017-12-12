@@ -1,16 +1,16 @@
 require 'minitest/autorun'
-require_relative "../lib/srm/register_array"
+require_relative "../lib/srm/table"
 require 'pp'
 
-class TestRegisterArray < MiniTest::Test
+class TestTable < MiniTest::Test
   include SRM
   def test_name
-    ra = RegisterArray.new(name: "r1")
+    ra = Table.new(name: "r1")
     assert_equal "r1", ra.name
   end
 
   def test_field
-    ra = RegisterArray.new(name: "r1", num_entries: 12) do |r|
+    ra = Table.new(name: "r1", num_entries: 12) do |r|
       r.fields << Field.new(name: 'f1', nbits: 1, lsb_pos: 0,  hard_reset: 0x0, mbist: 0xaaabbaacc)
     end
     assert_equal "r1", ra.name
@@ -20,7 +20,7 @@ class TestRegisterArray < MiniTest::Test
   end
 
   def test_equal
-    r1 = RegisterArray.new(name: "r1", num_entries: 12) do |r|
+    r1 = Table.new(name: "r1", num_entries: 12) do |r|
       r.fields << Field.new(name: 'f1', nbits: 1, lsb_pos: 0,  hard_reset: 0x0, mbist: 0xaaabbaacc)
     end
     r1_dup = r1.dup("r1")
@@ -28,27 +28,27 @@ class TestRegisterArray < MiniTest::Test
   end
 
   def test_unequal_num_entries
-    r1 = RegisterArray.new(name: "r1", num_entries: 12) do |r|
+    r1 = Table.new(name: "r1", num_entries: 12) do |r|
       r.fields << Field.new(name: 'f1', nbits: 1, lsb_pos: 0,  hard_reset: 0x0, mbist: 0xaaabbaacc)
     end
-    r2 = RegisterArray.new(name: "r1", num_entries: 1) do |r|
+    r2 = Table.new(name: "r1", num_entries: 1) do |r|
       r.fields << Field.new(name: 'f1', nbits: 1, lsb_pos: 0,  hard_reset: 0x0, mbist: 0xaaabbaacc)
     end
     assert_equal false, r1 == r2
   end
 
   def test_unequal_name
-    r1 = RegisterArray.new(name: "r1", num_entries: 12) do |r|
+    r1 = Table.new(name: "r1", num_entries: 12) do |r|
       r.fields << Field.new(name: 'f1', nbits: 1, lsb_pos: 0,  hard_reset: 0x0, mbist: 0xaaabbaacc)
     end
-    r2 = RegisterArray.new(name: "r2", num_entries: 12) do |r|
+    r2 = Table.new(name: "r2", num_entries: 12) do |r|
       r.fields << Field.new(name: 'f1', nbits: 1, lsb_pos: 0,  hard_reset: 0x0, mbist: 0xaaabbaacc)
     end
     assert_equal false, r1 == r2
   end
 
   def test_dup
-    r1 = RegisterArray.new(name: "r1_name", num_entries: 12) do |r|
+    r1 = Table.new(name: "r1_name", num_entries: 12) do |r|
       r.fields << Field.new(name: 'f1', nbits: 1, lsb_pos: 0,  hard_reset: 0x0, mbist: 0xaaabbaacc)
     end
     r2 = r1.dup("r2_name")
@@ -58,14 +58,14 @@ class TestRegisterArray < MiniTest::Test
 
   def test_hash
     h = {}
-    r1 = RegisterArray.new(name: "r", num_entries: 12) do |r|
+    r1 = Table.new(name: "r", num_entries: 12) do |r|
       r.fields << Field.new(name: 'f1', nbits: 1, lsb_pos: 0,  hard_reset: 0x0, mbist: 0xaaabbaacc)
     end
     h[r1] = 0x100
     assert_equal 0x100, h[r1]
 
     # Same key but different instance
-    r1_dup = RegisterArray.new(name: "r", num_entries: 12) do |r|
+    r1_dup = Table.new(name: "r", num_entries: 12) do |r|
       r.fields << Field.new(name: 'f1', nbits: 1, lsb_pos: 0,  hard_reset: 0x0, mbist: 0xaaabbaacc)
     end
     h[r1_dup] = 0x200
@@ -75,11 +75,11 @@ class TestRegisterArray < MiniTest::Test
   end
 
   def test_eql
-    r1 = RegisterArray.new(name: "r", num_entries: 2) do |r|
+    r1 = Table.new(name: "r", num_entries: 2) do |r|
       r.fields << Field.new(name: 'f1', nbits: 1, lsb_pos: 0,  hard_reset: 0x0, mbist: 0xaaabbaacc)
     end
 
-    r1_diff = RegisterArray.new(name: "r", num_entries: 2) do |r|
+    r1_diff = Table.new(name: "r", num_entries: 2) do |r|
       r.fields << Field.new(name: 'f1', nbits: 1, lsb_pos: 0,  hard_reset: 0x0, mbist: 0x0)
     end
     assert_equal(false, r1.eql?(r1_diff))
@@ -87,12 +87,12 @@ class TestRegisterArray < MiniTest::Test
   
  
   def test_json
-    r1 = RegisterArray.new(name: "r", num_entries: 34) do |r|
+    r1 = Table.new(name: "r", num_entries: 34) do |r|
       r.fields << Field.new(name: 'f1', nbits: 1, lsb_pos: 0,  hard_reset: 0x0, mbist: 0xaaabbaacc)
     end
     json_string = r1.to_json
     h = JSON.parse(json_string, object_class: OpenStruct)
-    assert_equal "RegisterArray", h.type
+    assert_equal "Table", h.type
     assert_equal "r", h.name
     assert_equal 34, h.num_entries
     assert_equal "f1", h.fields[0].name
