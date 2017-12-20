@@ -1,0 +1,49 @@
+#!/usr/bin/env ruby
+#
+# SRM register set generator from JSON representation.
+#
+require 'optparse'
+require_relative '../lib/srm'
+require 'json'
+require 'ostruct'
+require 'erb'
+
+options = {}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: srm_rgen [options]"
+  opts.on("-j", "--json [JsonFile]",
+          "Json register specification file") do |f|
+    options[:json_filename] = f
+  end
+
+  opts.on("-o", "--out [OutputFile]",
+          "Output file. Top level verilog file.") do |f|
+    options[:output_filename] = f
+  end
+
+  opts.on("-t", "--template [TemplateFile]",
+          "Optional template file. Default is ../lib/templates ") do |f|
+    options[:_template_filename] = f
+  end
+end.parse!
+
+abort "Invalid argument #{ARGV}" unless ARGV.empty?
+
+json_filename = options[:json_filename]
+json_string = File.read(json_filename)
+class ErbBinding < OpenStruct
+  def get_binding
+    return binding()
+  end
+end
+
+json_object = JSON.parse(json_string, object_class: ErbBinding)
+template = options[:template_filename] || "../lib/templates/simple_reg_model.erb"
+
+renderer = ERB.new(File.open(template).read)
+output = renderer.result(json_object.get_binding)
+output_filename = options[:output_filename] || File.basename(json_filename, ".json") + ".sv"
+File.open(output_filename, "w") do |fh|
+  fh.write output
+end
