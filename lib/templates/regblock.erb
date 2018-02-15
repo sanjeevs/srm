@@ -1,0 +1,13 @@
+  //------------------------------------------------------
+  // Regblock <%=name%> 
+  //------------------------------------------------------
+  class <%=name%>_node extends srm_node;
+<%for child in nodes%>
+<%if child.type == "Block"%>
+<%= ERB.new(File.open("../lib/templates/regblock.erb").read, 0, '>').result(child.get_binding)%>
+<%end%>
+<%if child.type == "Register"%> 
+<%= ERB.new(File.open("../lib/templates/register.erb").read, 0, '>').result(child.get_binding)%>
+<%end%>
+<% end %>
+  endclass

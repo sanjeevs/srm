@@ -11,9 +11,8 @@ opt = SrmSpecOptions.new(ARGV)
 eval(File.new(opt.spec).read, binding, __FILE__, __LINE__)
 
 klass = Kernel.const_get(opt.top)
-inst = klass.new(name: "srm_root")
+inst = klass.new(name: opt.name)
 
-inst.nodes.each do |n|
-  puts JSON.pretty_generate(n)
+File.open(opt.out, "w") do |fh|
+  fh.puts JSON.pretty_generate(inst)
 end
-

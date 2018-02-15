@@ -1,14 +1,14 @@
-all: srm_sap1.sv
+all: sap1_srm_model.svh
 	@echo Done generating srm register model
 
 SRM_SPEC=../bin/srm_spec
 SRM_RGEN=../bin/srm_rgen
 
-srm_sap1.sv: srm_sap1.json
+sap1_srm_model.svh: sap1_srm_model.json
 	$(SRM_RGEN) -j $< -o $@
 
-srm_sap1.json: sap1_top.rb
-	$(SRM_SPEC) -s $< -t Sap1 > $@
+sap1_srm_model.json: sap1_top.rb
+	$(SRM_SPEC) -s $< -t Sap1 -o $@
 
 clean:
-	rm -rf srm_sap1.json srm_sap1.sv
+	rm -rf sap1_srm_model.json sap1_srm_model.svh

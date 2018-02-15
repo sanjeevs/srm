@@ -32,13 +32,14 @@ abort "Invalid argument #{ARGV}" unless ARGV.empty?
 
 json_filename = options[:json_filename]
 json_string = File.read(json_filename)
-class ErbBinding < OpenStruct
+class MyErbBinding < OpenStruct
   def get_binding
     return binding()
   end
 end
 
-json_object = JSON.parse(json_string, object_class: ErbBinding)
+json_object = JSON.parse(json_string, object_class: MyErbBinding)
+puts json_object.nodes
 template = options[:template_filename] || "../lib/templates/simple_reg_model.erb"
 
 renderer = ERB.new(File.open(template).read)

@@ -1,0 +1,48 @@
+  //------------------------------------------------------
+  // Register <%=name%> 
+  //------------------------------------------------------
+  typedef struct packed {
+<%for field in fields%>
+    reg[<%=field.msb_pos%>:<%=field.lsb_pos%>] <%=field.name%>;
+<%end%>
+  } <%=name%>_struct_t; 
+
+  // Constraint Class
+  class <%=name%>_constr extends uvm_object; 
+     `uvm_object_utils(<%=name%>_constr) 
+
+<%for field in fields%>
+     rand bit[<%=field.msb_pos%>:<%=field.lsb_pos%>] <%=field.name%>; 
+<%end%> 
+     function new(string name="<%=name%>_constr"); 
+       super.new(name); 
+     endfunction 
+
+     function <%=name%>_struct_t get_data(); 
+       <%=name%>_struct_t d; 
+<%for field in fields%>
+       d.<%=field.name%> = <%=field.name%> 
+<%end%> 
+     endfunction
+  endclass
+
+  class <%=name%>_reg extends srm_reg#(<%=name%>_struct_t);
+    <%for field in fields%>
+    srm_field#(bit[<%=field.msb_pos%>:<%=field.lsb_pos%>]) <%=field.name%>;
+    <%end%>
+
+    function new(string name, srm_component parent);
+      super.new(name, parent);
+<%for reset_kind in reset_kinds%>
+      set_reset_kind("<%=reset_kind%>"); 
+<%end%>
+<%for field in fields%>
+      <%=field.name%> = new(.name("<%=field.name%>", .parent(this), .nbits(<%=field.nbits%>), .lsb_pos(<%=field.lsb_pos%>), .volatile(<%=field.volatile%>)); 
+      add_field(<%=field.name%>);
+      <%field.reset_values.to_h.each_pair do |kind, value|%>
+      <%=field.name%>.set_reset_value(.kind("<%=kind%>"), .value(<%=field.nbits%>'h<%=value.to_s(16)%>)); 
+<%end%>
+<%end%>
+    endfunction
+
+  endclass

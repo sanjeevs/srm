@@ -1,9 +1,16 @@
 This is a Ruby gem that is used for generating system verilog "simple_register_model" files.
 
-There are 2 utilitiles. The utility 'srm_spec' takes the ruby script and generates the json file. The utility 'srm_gen' takes the json file and generate the system verilog classes.
+Requires Ruby 2.0+ since it uses keyword arguments.
 
-Generating Register Model
-=============================
+## Scripts
+There are 2 utilitiles. 
+1. **srm_spec** 
+Generates json from a ruby specification file.  
+
+2. **srm_rgen**
+This generates the system verilog register model from the json specification.  
+
+## Generating Register Model
 
 Generate Json format.
 ```
