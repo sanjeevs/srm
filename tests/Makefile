@@ -1,14 +1,34 @@
-all: sap1_srm_model.svh
-	@echo Done generating srm register model
+#
+# Simple Makefile to run blockA testbench.
+#
+ifndef UVM_HOME
+  $(error UVM_HOME is undefied. Point it to install dir for uvm package)
+endif
 
-SRM_SPEC=../bin/srm_spec
-SRM_RGEN=../bin/srm_rgen
+ifndef SRM_HOME
+  $(error SRM_HOME is undefied. Point it to install dir for simple_reg_model)
+endif
 
-sap1_srm_model.svh: sap1_srm_model.json
-	$(SRM_RGEN) -j $< -o $@
+VCS = vcs -sverilog -timescale=1ns/1ns +acc +vpi -debug_all\
+      +define+UVM_OBJECT_MUST_HAVE_CONSTRUCTOR \
+      +incdir+$(UVM_HOME)/src $(UVM_HOME)/src/uvm.sv  \
+      +incdir+$(SRM_HOME)/src $(SRM_HOME)/src/srm.sv \
+      $(UVM_HOME)/src/dpi/uvm_dpi.cc -CFLAGS -DVCS
 
-sap1_srm_model.json: sap1_top.rb
-	$(SRM_SPEC) -s $< -t Sap1 -o $@
+SIMV = simv -l test.log
 
-clean:
-	rm -rf sap1_srm_model.json sap1_srm_model.svh
+
+cpu_table32: cpu_table32.sv
+	$(VCS) $(INCDIR) $< test_cpu_table32.sv 
+
+cpu_table32.json: cpu_table32.rb
+	../bin/srm_spec -s $< -o $@
+
+cpu_table32.sv: cpu_table32.json
+	../bin/srm_rgen -j $< -o $@
+
+vcs_clean:
+	rm -rf csrc simv simv.daidir vc_hdrs.h DVEfiles *.log *.key *.vpd 
+
+clean: vcs_clean
+	rm -rf cpu_table32.json cpu_table32.sv

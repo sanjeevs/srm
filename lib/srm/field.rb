@@ -8,7 +8,7 @@ module SRM
 class Field
   attr_reader :name, :nbits, :lsb_pos, :volatile, :reset_values, :policies
 
-  def initialize(name:, nbits:, lsb_pos:, volatile:false, **reset_values)
+  def initialize(name:, nbits:, lsb_pos:, volatile:0, **reset_values)
     @name = name
     @nbits = nbits.to_i
     @lsb_pos = lsb_pos.to_i

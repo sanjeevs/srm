@@ -4,5 +4,5 @@
 import srm_pkg::*;
 import uvm_pkg::*;
 
-<%= ERB.new(File.open("../lib/templates/regblock.erb").read, 0, '>').result(get_binding)%>
+<%= ERB.new(File.open("../lib/templates/node.erb").read, 0, '>').result(get_binding)%>
 `endif

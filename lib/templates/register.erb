@@ -22,7 +22,8 @@
        <%=name%>_struct_t d; 
 <%for field in fields%>
        d.<%=field.name%> = <%=field.name%> 
-<%end%> 
+<%end%>
+       return d;
      endfunction
   endclass
 

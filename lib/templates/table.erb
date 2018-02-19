@@ -1,0 +1,68 @@
+  //------------------------------------------------------
+  // Table <%=name%> 
+  //------------------------------------------------------
+  typedef struct packed {
+<%for field in fields%>
+    reg[<%=field.msb_pos%>:<%=field.lsb_pos%>] <%=field.name%>;
+<%end%>
+  } <%=name%>_struct_t; 
+
+  // Constraint Class
+  class <%=name%>_constr extends uvm_object; 
+     `uvm_object_utils(<%=name%>_constr) 
+
+<%for field in fields%>
+     rand bit[<%=field.msb_pos%>:<%=field.lsb_pos%>] <%=field.name%>; 
+<%end%> 
+     function new(string name="<%=name%>_constr"); 
+       super.new(name); 
+     endfunction 
+
+     function <%=name%>_struct_t get_data(); 
+       <%=name%>_struct_t d; 
+<%for field in fields%>
+       d.<%=field.name%> = <%=field.name%>; 
+<%end%> 
+       return d;
+     endfunction
+  endclass
+
+  class <%=name%>_table extends srm_table#(<%=name%>_struct_t);
+
+    // Entry in the table
+    class <%=name%>_entry extends srm_table_entry#(<%=name%>_struct_t);
+<%for field in fields%>
+      srm_field#(bit[<%=field.msb_pos%>:<%=field.lsb_pos%>]) <%=field.name%>;
+<%end%>
+
+      function new(string name, srm_node parent, srm_addr_t index=-1);
+        super.new(name, parent, index);
+<%for reset_kind in reset_kinds%>
+        set_reset_kind("<%=reset_kind%>"); 
+<%end%>
+<%for field in fields%>
+        <%=field.name%> = new(.name("<%=field.name%>"), .parent(this), .n_bits(<%=field.nbits%>), .lsb_pos(<%=field.lsb_pos%>), .volatile(<%=field.volatile%>)); 
+        add_field(<%=field.name%>);
+<%field.reset_values.to_h.each_pair do |kind, value|%>
+        <%=field.name%>.set_reset_value(.kind("<%=kind%>"), .value(<%=field.nbits%>'h<%=value.to_s(16)%>)); 
+<%end%>
+<%end%>
+      endfunction
+
+      virtual function <%=name%>_entry clone(srm_addr_t index);
+        <%=name%>_entry obj;
+        obj = new(.name($psprintf("%s_%0d", get_name(), index)),
+                .parent(_parent), .index(index));
+        __initialize(obj);
+        return obj;
+       endfunction
+    endclass
+
+    // Create the table <%=name%> 
+    function new(string name, srm_node parent);
+      <%=name%>_entry entry;
+      super.new(name, parent, .num_entries(<%=num_entries%>));
+      _prototype = entry;
+    endfunction
+
+  endclass
