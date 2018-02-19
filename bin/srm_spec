@@ -8,11 +8,22 @@ require_relative "srm_spec_options"
 opt = SrmSpecOptions.new(ARGV)
 
 
-eval(File.new(opt.spec).read, binding, __FILE__, __LINE__)
+top = eval(File.new(opt.spec).read, binding, __FILE__, __LINE__)
 
-klass = Kernel.const_get(opt.top)
-inst = klass.new(name: opt.name)
+if !opt.top.nil?
+  klass = Kernel.const_get(opt.top)
+  abort "Class type of class \"#{opt.top}\" must be \"SRM::RegBlock\". Got \"#{klass.class.name}\"" \
+    unless klass.class.name == "SRM::RegBlock"
+  # Instantiate the top level class with the given name (becomes the class name of sv)
+  inst = klass.new(name: opt.top)
+else
+  abort "Must specify the top level RegBlock class name" if top.nil?
+  abort "Return type from spec file must be of type \"SRM::RegBlock\". Got \"#{top.class.name}\"" \
+    unless top.class.name == "SRM::RegBlock"
+  inst = top
+end
 
+puts "Creating \"#{opt.out}\" output file for register block \"#{inst.name}\""
 File.open(opt.out, "w") do |fh|
   fh.puts JSON.pretty_generate(inst)
 end
