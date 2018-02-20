@@ -13,8 +13,8 @@ class Table
     @num_entries  = num_entries
     yield self if block_given?
 
-    sum_nbits = @fields.inject(0) { |sum_nbits, field| sum_nbits + field.nbits} 
-    @width = (sum_nbits % 8 == 0) ? sum_nbits/8 : (sum_nbits + 8)/8;
+    nbits = @fields.inject(0) { |sum_nbits, field| sum_nbits + field.nbits} 
+    @width = (nbits % 8 == 0) ? nbits/8 : (nbits + 8)/8;
     @default_size = @width * num_entries
     @offsets = {}
   end

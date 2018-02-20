@@ -1,7 +1,7 @@
 //------------------------------------------------------
 // Node <%=name%> 
 //------------------------------------------------------
-class <%=name%>_node extends srm_node;
+class <%=cname%> extends srm_node;
 <%for child in nodes%>
 <%if child.type == "Node"%>
 <%= ERB.new(File.open("../lib/templates/node.erb").read, 0, '>').result(child.get_binding)%>
@@ -18,8 +18,8 @@ class <%=name%>_node extends srm_node;
   <%=node.name%>_table  <%=node.name%>_inst; //FIXME: Class name ?
 <%end%>
 
-  function new(string name, srm_node parent);
-    super.new(name, parent);
+  function new(string cname, srm_node parent);
+    super.new(cname, parent);
 <%for node in nodes%>
     <%=node.name%>_inst = new(.name("<%=node.name%>_inst"), .parent(this));
     add_child(<%=node.name%>_inst);

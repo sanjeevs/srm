@@ -8,19 +8,21 @@ require_relative "srm_spec_options"
 opt = SrmSpecOptions.new(ARGV)
 
 
-top = eval(File.new(opt.spec).read, binding, __FILE__, __LINE__)
+top_inst = eval(File.new(opt.spec).read, binding, __FILE__, __LINE__)
+abort "Must specify the top level Node class name" if top_inst.nil?
 
 if !opt.top.nil?
+  # User passed a class name. So find the class and instantiate it.
   klass = Kernel.const_get(opt.top)
-  abort "Class type of class \"#{opt.top}\" must be \"SRM::RegBlock\". Got \"#{klass.class.name}\"" \
-    unless klass.class.name == "SRM::RegBlock"
+  abort "Class type of class \"#{opt.top}\" must be \"SRM::Node\". Got \"#{klass.class.name}\"" \
+    unless klass.class.name == "SRM::Node"
   # Instantiate the top level class with the given name (becomes the class name of sv)
-  inst = klass.new(name: opt.top)
+  inst = klass.new(name: opt.top.snake_case, cname: opt.top)
 else
-  abort "Must specify the top level RegBlock class name" if top.nil?
-  abort "Return type from spec file must be of type \"SRM::RegBlock\". Got \"#{top.class.name}\"" \
-    unless top.class.name == "SRM::RegBlock"
-  inst = top
+  # User passed the top level instance.
+  abort "Return type from spec file must be of type \"SRM::Node\". Got \"#{top.class.name}\"" \
+    unless top_inst.class.name == "SRM::Node"
+  inst = top_inst
 end
 
 puts "Creating \"#{opt.out}\" output file for register block \"#{inst.name}\""
