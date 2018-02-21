@@ -27,7 +27,7 @@
      endfunction
   endclass
 
-  class <%=name%>_table extends srm_table#(<%=name%>_struct_t);
+  class <%=cname%> extends srm_table#(<%=name%>_struct_t);
 
     // Entry in the table
     class <%=name%>_entry extends srm_table_entry#(<%=name%>_struct_t);

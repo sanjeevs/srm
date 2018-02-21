@@ -9,7 +9,7 @@ ifndef SRM_HOME
   $(error SRM_HOME is undefied. Point it to install dir for simple_reg_model)
 endif
 
-VCS = vcs -sverilog -timescale=1ns/1ns +acc +vpi -debug_all\
+VCS = vcs -sverilog -timescale=1ns/1ns  +vpi -debug_all\
       +define+UVM_OBJECT_MUST_HAVE_CONSTRUCTOR \
       +incdir+$(UVM_HOME)/src $(UVM_HOME)/src/uvm.sv  \
       +incdir+$(SRM_HOME)/src $(SRM_HOME)/src/srm.sv \
@@ -27,8 +27,18 @@ cpu_table32.json: cpu_table32.rb
 cpu_table32.sv: cpu_table32.json
 	../bin/srm_rgen -j $< -o $@
 
+
+cpu_reg32: cpu_reg32.sv
+	$(VCS) $(INCDIR) $< test_cpu_reg32.sv 
+
+cpu_reg32.json: cpu_reg32.rb
+	../bin/srm_spec -s $< -o $@
+
+cpu_reg32.sv: cpu_reg32.json
+	../bin/srm_rgen -j $< -o $@
+
 vcs_clean:
 	rm -rf csrc simv simv.daidir vc_hdrs.h DVEfiles *.log *.key *.vpd 
 
 clean: vcs_clean
-	rm -rf cpu_table32.json cpu_table32.sv
+	rm -rf cpu_table32.json cpu_table32.sv cpu_reg32.json cpu_reg32.sv

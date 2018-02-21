@@ -1,8 +1,8 @@
 # Create a 32 bit register in cpu map at offset 0x100.
 require 'srm'
 
-SRM::RegBlock.new(name: "top") do |block|
-  block << SRM::Register.new(name: "r1_reg", reset_kinds: [:hard_reset]) do |reg|
+SRM::Node.new(name: "top") do |block|
+  block << SRM::Register.new(name: "my_reg", reset_kinds: [:hard_reset]) do |reg|
     reg << SRM::Field.new(name: "field0", nbits: 16, lsb_pos:0, hard_reset: 0xbeef)
     reg << SRM::Field.new(name: "field1", nbits: 16, lsb_pos:16, hard_reset: 0xdead)
   end.offset(cpu_map: 0x100)

@@ -102,6 +102,7 @@ class TestRegister < MiniTest::Test
     h = JSON.parse(json_string, object_class: OpenStruct)
     assert_equal "Register", h.type
     assert_equal "r1", h.name
+    assert_equal "R1", h.cname
     assert_equal "f1", h.fields[0].name
     assert_equal 0xaaabbaacc, h.fields[0].reset_values.mbist
     assert_equal 0x0, h.fields[0].reset_values.hard_reset

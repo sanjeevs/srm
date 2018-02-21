@@ -1,13 +1,15 @@
 require_relative "field"
+require_relative 'utils'
 
 module SRM
 # A register array is a register with num_entries.
 class Table 
-  attr_reader :type, :name, :fields, :reset_kinds, :width, :num_entries, :offsets
+  attr_reader :type, :name, :cname, :fields, :reset_kinds, :width, :num_entries, :offsets
 
-  def initialize(name:, fields: [], reset_kinds: [], num_entries: 1)
+  def initialize(name:, cname: nil, fields: [], reset_kinds: [], num_entries: 1)
     @type = "Table"
     @name = name
+    @cname = cname || @name.camel_case 
     @fields = fields
     @reset_kinds = reset_kinds
     @num_entries  = num_entries
@@ -68,6 +70,7 @@ class Table
     {
       "type" => type,
       "name" => name,
+      "cname" => cname,
       "num_entries" => num_entries,
       "reset_kinds" => reset_kinds,
       "width" => width,

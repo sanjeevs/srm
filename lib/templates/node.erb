@@ -15,15 +15,15 @@ class <%=cname%> extends srm_node;
 <%end%>
   // Instantiate the children
 <%for node in nodes%>
-  <%=node.name%>_table  <%=node.name%>_inst; //FIXME: Class name ?
+  <%=node.cname%>  <%=node.name%>;
 <%end%>
 
   function new(string cname, srm_node parent);
     super.new(cname, parent);
 <%for node in nodes%>
-    <%=node.name%>_inst = new(.name("<%=node.name%>_inst"), .parent(this));
-    add_child(<%=node.name%>_inst);
-    <%=node.name%>_inst.set_offset("default", .offset('h0));
+    <%=node.name%> = new(.name("<%=node.name%>"), .parent(this));
+    add_child(<%=node.name%>);
+    <%=node.name%>.set_offset("default", .offset('h0));
 <%end%>
   endfunction
 

@@ -87,13 +87,14 @@ class TestTable < MiniTest::Test
   
  
   def test_json
-    r1 = Table.new(name: "r", num_entries: 34) do |r|
+    r1 = Table.new(name: "reg1", num_entries: 34) do |r|
       r.fields << Field.new(name: 'f1', nbits: 1, lsb_pos: 0,  hard_reset: 0x0, mbist: 0xaaabbaacc)
     end
     json_string = r1.to_json
     h = JSON.parse(json_string, object_class: OpenStruct)
     assert_equal "Table", h.type
-    assert_equal "r", h.name
+    assert_equal "reg1", h.name
+    assert_equal "Reg1", h.cname
     assert_equal 34, h.num_entries
     assert_equal "f1", h.fields[0].name
     assert_equal 0xaaabbaacc, h.fields[0].reset_values.mbist
