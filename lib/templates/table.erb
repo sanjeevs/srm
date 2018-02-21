@@ -5,21 +5,21 @@
 <%for field in fields%>
     reg[<%=field.msb_pos%>:<%=field.lsb_pos%>] <%=field.name%>;
 <%end%>
-  } <%=name%>_struct_t; 
+  } <%=cname.snake_case%>_struct_t; 
 
   // Constraint Class
-  class <%=name%>_constr extends uvm_object; 
+  class <%=cname.snake_case%>_constr extends uvm_object; 
      `uvm_object_utils(<%=name%>_constr) 
 
 <%for field in fields%>
      rand bit[<%=field.msb_pos%>:<%=field.lsb_pos%>] <%=field.name%>; 
 <%end%> 
-     function new(string name="<%=name%>_constr"); 
+     function new(string name="<%=cname_snake_case%>_constr"); 
        super.new(name); 
      endfunction 
 
-     function <%=name%>_struct_t get_data(); 
-       <%=name%>_struct_t d; 
+     function <%=cname.snake_case%>_struct_t get_data(); 
+       <%=cname.snake_case%>_struct_t d; 
 <%for field in fields%>
        d.<%=field.name%> = <%=field.name%>; 
 <%end%> 
@@ -27,10 +27,10 @@
      endfunction
   endclass
 
-  class <%=cname%> extends srm_table#(<%=name%>_struct_t);
+  class <%=cname%> extends srm_table#(<%=cname.snake_case%>_struct_t);
 
     // Entry in the table
-    class <%=name%>_entry extends srm_table_entry#(<%=name%>_struct_t);
+    class <%=cname.snake_case%>_entry extends srm_table_entry#(<%=cname.snake_case%>_struct_t);
 <%for field in fields%>
       srm_field#(bit[<%=field.msb_pos%>:<%=field.lsb_pos%>]) <%=field.name%>;
 <%end%>
@@ -62,7 +62,17 @@
     function new(string name, srm_node parent);
       <%=name%>_entry entry;
       super.new(name, parent, .num_entries(<%=num_entries%>));
+      entry = new(.name("<%=name%>_entry"), .parent(this));
       _prototype = entry;
+    endfunction
+
+    // Covrariant return type: LRM 2012 Feature
+    virtual function <%=cname.snake_case%>_entry entry_at(srm_addr_t index);
+      <%=cname.snake_case%>_entry obj;
+      srm_table_entry#(<%=cname.snake_case%>_struct_t) entry;
+      entry = super.entry_at(index);
+      $cast(obj, entry);
+      return obj;
     endfunction
 
   endclass

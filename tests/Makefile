@@ -21,20 +21,13 @@ SIMV = simv -l test.log
 cpu_table32: cpu_table32.sv
 	$(VCS) $(INCDIR) $< test_cpu_table32.sv 
 
-cpu_table32.json: cpu_table32.rb
-	../bin/srm_spec -s $< -o $@
-
-cpu_table32.sv: cpu_table32.json
-	../bin/srm_rgen -j $< -o $@
-
-
 cpu_reg32: cpu_reg32.sv
 	$(VCS) $(INCDIR) $< test_cpu_reg32.sv 
 
-cpu_reg32.json: cpu_reg32.rb
+%.json: %.rb
 	../bin/srm_spec -s $< -o $@
 
-cpu_reg32.sv: cpu_reg32.json
+%.sv: %.json
 	../bin/srm_rgen -j $< -o $@
 
 vcs_clean:
