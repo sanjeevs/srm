@@ -39,12 +39,13 @@ class MyErbBinding < OpenStruct
 end
 
 json_object = JSON.parse(json_string, object_class: MyErbBinding)
-puts json_object.nodes
 template = options[:template_filename] || "../lib/templates/simple_reg_model.erb"
 
 renderer = ERB.new(File.open(template).read)
 output = renderer.result(json_object.get_binding)
 output_filename = options[:output_filename] || File.basename(json_filename, ".json") + ".sv"
+
+puts "Creating \"#{output_filename}\" output file for register block"
 File.open(output_filename, "w") do |fh|
   fh.write output
 end

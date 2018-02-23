@@ -8,7 +8,7 @@ class SrmSpecOptions
     @out = "srm_regmodel.json"
     OptionParser.new do |opts|
       opts.banner = "Usage: -s <spec_file> -t <top_level> [options]"
-      opts.on("-s" , "--spec filename", "Spec file name") do |s|
+      opts.on("-s" , "--src filename", "Ruby src file name") do |s|
         @spec = s
       end
       opts.on("-t" , "--top TopRegBlock", "Class name of top reg block") do |t|
