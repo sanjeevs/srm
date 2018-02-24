@@ -1,8 +1,9 @@
-# Address map for block X
+# Register block for the demo 'sap'.
+# The demo is in https://github.com/sanjeevs/srm_sap
 require 'srm'
 
-class BlockX < SRM::RegBlock
-  def initialize(name:)
+class BlockA < SRM::Node
+  def initialize(name:,cname:)
     super
     self << SRM::Table.new(name: "t1", reset_kinds: [:hard_reset], num_entries: 1024) do |t|
       t << SRM::Field.new(name: 'field0', nbits: 32, lsb_pos: 0, hard_reset: 0x0)

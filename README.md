@@ -24,21 +24,3 @@ The JSON file output can now be used to generate the SRM description.
 tests>../bin/srm_spec -j srm_regmode.json 
 Creating "srm_regmodel.sv" output file for register block
 ```
-
-1. JSON Format  
-This describes all the fields required by the tool generation.
-## Scripts
-There are 2 utilitiles. 
-1. **srm_spec** 
-Generates json from a ruby specification file.  
-
-2. **srm_rgen**
-This generates the system verilog register model from the json specification.  
-
-## Generating Register Model
-
-Generate Json format.
-```
-cd tests
-make
-```

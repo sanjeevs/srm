@@ -14,8 +14,8 @@ abort "Must specify the top level Node class name" if top_inst.nil?
 if !opt.top.nil?
   # User passed a class name. So find the class and instantiate it.
   klass = Kernel.const_get(opt.top)
-  abort "Class type of class \"#{opt.top}\" must be \"SRM::Node\". Got \"#{klass.class.name}\"" \
-    unless klass.class.name == "SRM::Node"
+  abort "Superclass of class \"#{opt.top}\" must be \"SRM::Node\".Got \"#{klass.superclass.name}\"" \
+    unless klass.superclass.name == "SRM::Node"
   # Instantiate the top level class with the given name (becomes the class name of sv)
   inst = klass.new(name: opt.top.snake_case, cname: opt.top)
 else
